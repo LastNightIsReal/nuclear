@@ -29,7 +29,7 @@ module.exports = (env: BuildEnv): webpack.Configuration => {
   return {
     entry: './src/main.ts',
     resolve: {
-      extensions: ['.ts', '.js', '.json'],
+      extensions: ['.ts', '.js', '.json', '.node'],
       alias: {
         jsbi: path.resolve(__dirname, '..', '..', 'node_modules', 'jsbi', 'dist', 'jsbi-cjs.js')
       },
@@ -58,7 +58,8 @@ module.exports = (env: BuildEnv): webpack.Configuration => {
         },
         {
           test: /\.node$/,
-          use: 'node-loader'
+          use: 'node-loader',
+          include: [MAIN_DIR, path.resolve(__dirname, '..', 'scanner')]
         }
       ]
     },
