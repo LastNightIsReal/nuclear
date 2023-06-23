@@ -1,9 +1,12 @@
 mod error;
+mod js;
 mod local_track;
 use error::ScannerError;
 use id3::{Tag, TagLike};
+use js::{set_optional_field_str, set_optional_field_u32};
 use neon::prelude::*;
-use std::{collections::LinkedList, error::Error};
+use std::collections::LinkedList;
+use uuid::Uuid;
 
 use local_track::LocalTrack;
 
@@ -12,10 +15,14 @@ fn visitFile(path: String) -> Result<LocalTrack, ScannerError> {
 
     match tag {
         Ok(tag) => Ok(LocalTrack {
-            artist: Some(tag.artist().unwrap_or("no artist").to_string()),
-            title: Some(tag.title().unwrap_or("no title").to_string()),
-            album: Some(tag.album().unwrap_or("no album").to_string()),
-            filename: path.clone(),
+            uuid: Uuid::new_v4().to_string(),
+            artist: tag.artist().map(|s| s.to_string()),
+            title: tag.title().map(|s| s.to_string()),
+            album: tag.album().map(|s| s.to_string()),
+            duration: tag.duration().unwrap_or(0),
+            position: tag.track(),
+            year: tag.year().map(|s| s as u32),
+            filename: path.split("/").last().map(|s| s.to_string()).unwrap(),
             path: path.clone(),
         }),
         Err(e) => Err(ScannerError {
@@ -60,55 +67,62 @@ fn scanFolders(mut cx: FunctionContext) -> JsResult<JsArray> {
         .map(|format| format.to_string(&mut cx).unwrap().value(&mut cx))
         .collect::<Vec<String>>();
     let folders_vec = folders.to_vec(&mut cx)?;
-    let mut dirsToScanQueue: LinkedList<String> = LinkedList::new();
-    let mut filesToScanQueue: LinkedList<String> = LinkedList::new();
-    let mut totalFilesToScanNum = 0;
+    let mut dirs_to_scan_queue: LinkedList<String> = LinkedList::new();
+    let mut files_to_scan_queue: LinkedList<String> = LinkedList::new();
+    let mut total_files_to_scan_num;
     for folder in folders_vec {
         let folder_string = folder.to_string(&mut cx)?.value(&mut cx);
-        dirsToScanQueue.push_back(folder_string);
+        dirs_to_scan_queue.push_back(folder_string);
     }
 
     // While there are still folders left to scan
-    while !dirsToScanQueue.is_empty() {
+    while !dirs_to_scan_queue.is_empty() {
         // Get the next folder to scan
-        let folder = dirsToScanQueue.pop_front().unwrap();
+        let folder = dirs_to_scan_queue.pop_front().unwrap();
 
         // Scan the folder
         visitDirectory(
             folder.clone(),
             supported_formats_vec.clone(),
-            &mut dirsToScanQueue,
-            &mut filesToScanQueue,
+            &mut dirs_to_scan_queue,
+            &mut files_to_scan_queue,
         );
 
         // Call the progress callback
         let this = cx.undefined();
         let args = vec![
             cx.number(0).upcast(),
-            cx.number(filesToScanQueue.len() as f64).upcast(),
+            cx.number(files_to_scan_queue.len() as f64).upcast(),
             cx.string(folder.clone()).upcast(),
         ];
         onProgressCallback.call(&mut cx, this, args)?;
     }
 
     // All folders have been scanned, now scan the files
-    totalFilesToScanNum = filesToScanQueue.len();
-    while !filesToScanQueue.is_empty() {
+    total_files_to_scan_num = files_to_scan_queue.len();
+    while !files_to_scan_queue.is_empty() {
         // Get the next file to scan
-        let file = filesToScanQueue.pop_front().unwrap();
+        let file = files_to_scan_queue.pop_front().unwrap();
 
         // Scan the file
         let track = visitFile(file.clone()).unwrap();
         let len = result.len(&mut cx);
-        let track_js_object = JsObject::new(&mut cx);
-        let track_artist_js_string = cx.string(track.artist.unwrap_or("".to_string()));
-        track_js_object.set(&mut cx, "artist", track_artist_js_string)?;
+        let mut track_js_object = JsObject::new(&mut cx);
+        let track_uuid_js_string = cx.string(track.uuid);
+        track_js_object.set(&mut cx, "uuid", track_uuid_js_string)?;
 
-        let track_title_js_string = cx.string(track.title.unwrap_or("".to_string()));
-        track_js_object.set(&mut cx, "title", track_title_js_string)?;
+        set_optional_field_str(&mut cx, &mut track_js_object, "artist", track.artist);
 
-        let track_album_js_string = cx.string(track.album.unwrap_or("".to_string()));
-        track_js_object.set(&mut cx, "album", track_album_js_string)?;
+        set_optional_field_str(&mut cx, &mut track_js_object, "title", track.title);
+
+        set_optional_field_str(&mut cx, &mut track_js_object, "album", track.album);
+
+        let track_duration_js_number = cx.number(track.duration);
+        track_js_object.set(&mut cx, "duration", track_duration_js_number)?;
+
+        set_optional_field_u32(&mut cx, &mut track_js_object, "position", track.position);
+
+        set_optional_field_u32(&mut cx, &mut track_js_object, "year", track.year);
 
         let track_filename_js_string = cx.string(track.filename);
         track_js_object.set(&mut cx, "filename", track_filename_js_string)?;
@@ -116,15 +130,17 @@ fn scanFolders(mut cx: FunctionContext) -> JsResult<JsArray> {
         let track_path_js_string = cx.string(track.path);
         track_js_object.set(&mut cx, "path", track_path_js_string)?;
 
+        let track_local = cx.boolean(true);
+        track_js_object.set(&mut cx, "local", track_local)?;
+
         result.set(&mut cx, len, track_js_object)?;
-        println!("Scanned file: {}", file);
 
         // Call the progress callback
         let this = cx.undefined();
         let args = vec![
-            cx.number((totalFilesToScanNum - filesToScanQueue.len()) as f64)
+            cx.number((total_files_to_scan_num - files_to_scan_queue.len()) as f64)
                 .upcast(),
-            cx.number(totalFilesToScanNum as f64).upcast(),
+            cx.number(total_files_to_scan_num as f64).upcast(),
             cx.string(file.clone()).upcast(),
         ];
         onProgressCallback.call(&mut cx, this, args)?;

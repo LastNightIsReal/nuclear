@@ -16,6 +16,8 @@ const osMapper: Record<string, BuildEnv['TARGET']> = {
 
 const MAIN_DIR = path.resolve(__dirname, 'src');
 const CORE_DIR = path.resolve(__dirname, '..', 'core', 'src');
+const SCANNER_DIR = path.resolve(__dirname, '..', 'scanner');
+const SCANNER_DIR_SYMLINKED = path.resolve(__dirname, 'node_modules', '@nuclear', 'scanner');
 const CORE_DIR_SYMLINKED = path.resolve(__dirname, 'node_modules', '@nuclear', 'core', 'src');
 
 module.exports = (env: BuildEnv): webpack.Configuration => {
@@ -59,7 +61,7 @@ module.exports = (env: BuildEnv): webpack.Configuration => {
         {
           test: /\.node$/,
           use: 'node-loader',
-          include: [MAIN_DIR, path.resolve(__dirname, '..', 'scanner')]
+          include: [MAIN_DIR, SCANNER_DIR, SCANNER_DIR_SYMLINKED]
         }
       ]
     },
