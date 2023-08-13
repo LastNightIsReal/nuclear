@@ -61,8 +61,6 @@ export const App: React.FC<AppProps> = ({
   settings,
   actions
 }: AppProps) => {
-  const { t } = useTranslation('app');
-
   const updateConnectivityStatus = (isConnected) => {
     actions.changeConnectivity(isConnected);
   };

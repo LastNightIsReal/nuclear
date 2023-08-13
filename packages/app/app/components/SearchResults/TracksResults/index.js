@@ -12,7 +12,7 @@ const TracksResults = ({ tracks, limit }) => {
   const collection = tracks || [];
 
   if (collection.length === 0) {
-    return t('empty');
+    return <span>{t('empty')}</span>;
   } else {
     return (
       <Segment className={trackRowStyles.tracks_container}>

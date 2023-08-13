@@ -257,7 +257,7 @@ export const albumInfoSearch = (albumId: string, releaseType: 'master' | 'releas
 };
 
 
-export const artistInfoSearch = (artistId: string, artist: SearchResultsArtist) => async (dispatch, getState: () => RootState) => {
+export const artistInfoSearch = (artistId: string, artist?: SearchResultsArtist) => async (dispatch, getState: () => RootState) => {
   dispatch(SearchActions.artistInfoStart(artistId));
   try {
     const selectedProvider = getSelectedMetaProvider(getState, artist?.source);
