@@ -10,13 +10,13 @@ export type ArtistDetailsState = Partial<ArtistDetails> & {loading?: boolean, er
 
 export type AlbumDetailsState = Partial<AlbumDetails> & {loading?: boolean, error?: boolean}
 
-type SearchState = {
+export type SearchState = {
   artistSearchResults: Artist[]
   albumSearchResults: SearchResultsAlbum[]
   podcastSearchResults: SearchResultsPodcast[]
-  trackSearchResults: string | { id: string, info: LastfmTrackMatchInternal[] } | undefined[]
-  playlistSearchResults: { id:string, info: YoutubeResult[] } | undefined[]
-  liveStreamSearchResults: { id:string, info: YoutubeResult[] } | undefined[]
+  trackSearchResults: string | { id: string, info: LastfmTrackMatchInternal[] } | []
+  playlistSearchResults: { id:string, info: YoutubeResult[] } | []
+  liveStreamSearchResults: { id:string, info: YoutubeResult[] } | []
   albumDetails:{[key: string]:  AlbumDetailsState }
   artistDetails: {[key: string]: ArtistDetailsState }
   searchHistory: string[]

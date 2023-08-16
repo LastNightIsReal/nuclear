@@ -1,6 +1,6 @@
 import logger from 'electron-timber';
 import { rest } from '@nuclear/core';
-import _, { isString } from 'lodash';
+import _, { has, isString } from 'lodash';
 import artPlaceholder from '../../resources/media/art_placeholder.png';
 import globals from '../globals';
 import { error } from './toasts';
@@ -11,6 +11,7 @@ import { AlbumDetails, ArtistDetails, SearchResultsAlbum, SearchResultsArtist, S
 import { createStandardAction } from 'typesafe-actions';
 import { LastfmTrackMatch, LastfmTrackMatchInternal } from '@nuclear/core/src/rest/Lastfm.types';
 import { YoutubeResult } from '@nuclear/core/src/rest/Youtube';
+import { SearchState } from '../reducers/search';
 
 const lastfm = new rest.LastFmApi(globals.lastfmApiKey, globals.lastfmApiSecret);
 
@@ -315,4 +316,12 @@ export const albumInfoSearchByName = (albumName: string, artistName: string, his
       null, settings
     ));
   }
+};
+
+export const isFullyLoadedPlaylistResult = (playlistSearchResults: SearchState['playlistSearchResults']): playlistSearchResults is { id: string; info: YoutubeResult[]; } => {
+  return playlistSearchResults !== undefined && has(playlistSearchResults, 'info');
+};
+
+export const isFullyLoadedTrackResult = (trackSearchResults: SearchState['trackSearchResults']): trackSearchResults is { id: string; info: LastfmTrackMatchInternal[]; } => {
+  return trackSearchResults !== undefined && has(trackSearchResults, 'info');
 };

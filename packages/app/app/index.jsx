@@ -13,7 +13,7 @@ import { remote } from 'electron';
 import { getOption, setOption } from '@nuclear/core';
 import i18n, { setupI18n } from '@nuclear/i18n';
 
-import App from './App';
+import {App} from './App';
 import configureStore from './store/configureStore';
 
 setConfig({
