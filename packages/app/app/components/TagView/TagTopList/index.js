@@ -11,7 +11,7 @@ const TagTopList = ({ topList, onClick, header }) => (
     <div className={styles.top_list_items}>
       <div
         className={styles.top_item}
-        onClick={() => onClick && onClick(topList[0].name)}
+        onClick={() => onClick && onClick(topList[0].name, toplist[0].artist?.name)}
       >
         <SmoothImage src={_.last(topList[0].image)['#text']} />
         <div className={styles.item_overlay}>
