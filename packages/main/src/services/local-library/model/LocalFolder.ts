@@ -4,7 +4,7 @@ import LocalTrack from './LocalTrack';
 
 @Entity()
 class LocalFolder {
-  @PrimaryColumn()
+  @PrimaryColumn('path')
   path: string;
 
   @OneToMany(() => LocalTrack, track => track.folder)

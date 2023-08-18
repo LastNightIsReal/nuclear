@@ -5,10 +5,10 @@ export class ListeningHistoryEntry {
     @PrimaryGeneratedColumn("uuid")
     uuid: string;
 
-    @Column()
+    @Column('string')
     artist: string;
 
-    @Column()
+    @Column('title')
     title: string;
 
     @CreateDateColumn({

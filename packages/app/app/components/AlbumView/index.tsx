@@ -1,5 +1,5 @@
 import React from 'react';
-import Img from 'react-image';
+import { Img } from 'react-image';
 import _ from 'lodash';
 import { Dimmer, Icon, Loader } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';

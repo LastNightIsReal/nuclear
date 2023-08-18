@@ -14,34 +14,34 @@ import LocalFolder from './LocalFolder';
 class LocalTrack {
   static THUMBNAILS_DIR = path.join(app.getPath('userData'), 'thumbnails');
 
-  @PrimaryColumn()
+  @PrimaryColumn('uuid')
   uuid: string;
 
-  @Column({ nullable: true })
+  @Column('string', { nullable: true })
   album?: string;
 
-  @Column()
+  @Column('string')
   artist: string;
 
-  @Column()
+  @Column('number')
   duration?: number;
 
-  @Column({ nullable: true })
+  @Column('string', { nullable: true })
   thumbnail?: string;
 
-  @Column()
+  @Column('string')
   name?: string;
 
-  @Column({ unique: true })
+  @Column('string', { unique: true })
   path: string;
 
-  @Column({ nullable: true })
+  @Column('number', { nullable: true })
   position?: number;
 
-  @Column({ nullable: true })
+  @Column('string', { nullable: true })
   year?: string;
 
-  @Column({ nullable: true })
+  @Column('number', { nullable: true })
   lastScanned?: number;
 
   @ManyToOne(() => LocalFolder, folder => folder.path)
