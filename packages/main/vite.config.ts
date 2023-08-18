@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
   publicDir: false,
@@ -13,5 +14,15 @@ export default defineConfig({
       entry: './src/main.ts',
       formats: ['cjs']
     }
-  }
+  },
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: '.env',
+          dest: '.'
+        }
+      ]
+    })
+  ]
 });
