@@ -18,6 +18,7 @@ export { default as HistoryTableDate } from './components/TrackTable/HistoryTabl
 export { default as LibraryListTypeToggle } from './components/LibraryListTypeToggle';
 export { default as Loader } from './components/Loader';
 export { default as MiniPlayer } from './components/MiniPlayer';
+export { default as NuclearImage } from './components/NuclearImage';
 export { default as PlayerBar } from './components/PlayerBar';
 export { default as PlayerButton } from './components/PlayerButton';
 export { default as Playlists } from './components/Playlists';

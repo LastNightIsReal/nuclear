@@ -25,12 +25,6 @@ export default defineConfig({
 
   base: './',
 
-  resolve: {
-    alias: {
-      'react-image': '../../node_modules/react-image'
-    }
-  },
-
   css: {
     modules: {
       localsConvention: 'camelCaseOnly'

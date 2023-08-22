@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import cx from 'classnames';
 import { Icon } from 'semantic-ui-react';
 import { isEmpty } from 'lodash';

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Img } from 'react-image';
 import _ from 'lodash';
 import { Dimmer, Icon, Loader } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
-import { Loader as NuclearLoader, ContextPopup, PopupButton } from '@nuclear/ui';
+import { Loader as NuclearLoader, NuclearImage, ContextPopup, PopupButton } from '@nuclear/ui';
 import styles from './styles.scss';
 import artPlaceholder from '../../../resources/media/art_placeholder.png';
 import TrackTableContainer from '../../containers/TrackTableContainer';
@@ -41,10 +40,10 @@ export const AlbumView: React.FC<AlbumViewProps> = ({
         Boolean(album) && !album.loading && (
           <div className={styles.album}>
             <div className={styles.album_info_box}>
-              <Img
+              <NuclearImage
                 src={album.coverImage}
-                loader={<NuclearLoader type='small' />}
-                unloader={<img src={String(artPlaceholder)} />}
+                Error={() => <img src={String(artPlaceholder)} />}
+                Loader={() => <NuclearLoader type='small' />}
               />
               <div className={styles.album_details}>
                 <div className={styles.album_title}>

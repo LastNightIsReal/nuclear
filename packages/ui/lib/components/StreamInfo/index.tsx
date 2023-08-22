@@ -1,9 +1,8 @@
 import React, { memo } from 'react';
-import {Img} from 'react-image';
 
 import { StreamData } from '@nuclear/core/src/plugins/plugins.types';
 
-import { Dropdown } from '../..';
+import { Dropdown, NuclearImage } from '../..';
 import { StreamOption } from './StreamOption';
 import artPlaceholder from '../../../resources/media/art_placeholder.png';
 import Tooltip from '../Tooltip';
@@ -42,11 +41,11 @@ const StreamInfo: React.FC<StreamInfoProps & Handlers> =({
     <>
       <div className={styles.stream_info}>
         <div className={styles.stream_thumbnail}>
-          <Img
-            alt=''
+          <NuclearImage
             src={selectedStream?.thumbnail ?? thumbnail}
-            unloader={<img src={String(artPlaceholder)} />}
             onLoad={onImageLoaded}
+            Loader={() => <img src={String(artPlaceholder)} />}
+            Error={() => <img src={String(artPlaceholder)} />}
           />
         </div>
         <div className={styles.stream_text_info}>
