@@ -3,10 +3,7 @@ import {
   GITHUB_API_USER_ENDPOINT
 } from '../rest/Github';
 
-import {
-  githubClientId,
-  githubSecret
-} from '../globals';
+import globals from '../globals';
 
 export const GITHUB_OAUTH_CODE_SUCCESS = 'GITHUB_OAUTH_CODE_SUCCESS';
 export const GITHUB_OAUTH_ACCESS_TOKEN_SUCCESS = 'GITHUB_OAUTH_ACCESS_TOKEN_SUCCESS';
@@ -36,12 +33,12 @@ export function githubOauth(code) {
     fetch(
       'https://cors-anywhere.herokuapp.com/' +
       GITHUB_OAUTH_ACCESS_TOKEN_URL +
-        '?client_id=' +
-        githubClientId +
-        '&client_secret=' +
-        githubSecret +
-        '&code=' +
-        code,
+      '?client_id=' +
+      globals.githubClientId +
+      '&client_secret=' +
+      globals.githubSecret +
+      '&code=' +
+      code,
       {
         method: 'POST',
         headers: { 'Accept': 'application/json' }

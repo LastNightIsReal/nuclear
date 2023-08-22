@@ -3,6 +3,6 @@ $background-color: transparent;
 //$table-prefix: BaseTable !default;
 
 $border: none;
-$row-hovered-background-color: hsla(0, 0%, 100%, .2);
+$row-hovered-background-color: hsla(0, 0%, 100%, 0.2);
 
-@import '~react-base-table/es/_BaseTable.scss';
+@import "react-base-table/es/_BaseTable.scss";
